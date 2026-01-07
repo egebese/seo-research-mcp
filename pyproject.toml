@@ -21,7 +21,8 @@ dependencies = [
     "fastmcp>=2.0.0",
     "requests>=2.32.3",
     "pydantic>=2.5.0",
-    "pydantic-core>=2.14.0"
+    "pydantic-core>=2.14.0",
+    "openai>=1.0.0"
 ]
 
 [project.scripts]
