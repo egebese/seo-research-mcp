@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This MCP Does
 
-SEO Research MCP provides four SEO research tools powered by Ahrefs data:
+SEO Research MCP provides five SEO research tools:
 
 | Tool | What to Ask | Example |
 |------|-------------|---------|
@@ -16,6 +16,7 @@ SEO Research MCP provides four SEO research tools powered by Ahrefs data:
 | `keyword_generator` | Keyword ideas from seed keywords | "Find keywords related to 'react hooks'" |
 | `get_traffic` | Traffic estimates for websites | "What's the traffic for github.com?" |
 | `keyword_difficulty` | How hard a keyword is to rank for | "Check difficulty for 'best laptop 2025'" |
+| `ai_search_queries` | AI-generated search queries with intent | "Generate search queries for 'coworking varna'" |
 
 ## How to Use These Tools
 
@@ -26,6 +27,7 @@ Once configured, simply ask naturally:
 "Generate keyword ideas for 'python tutorial'"
 "Show traffic data for shopify.com"
 "What's the keyword difficulty for 'ai tools'?"
+"Generate AI search queries for 'coworking space varna'"
 ```
 
 ### Tool Parameters
@@ -47,9 +49,16 @@ Once configured, simply ask naturally:
 - `keyword`: Keyword to check
 - `country`: Target country (default: "us")
 
+**ai_search_queries(keyword, count?, model?, language?)**
+- `keyword`: Topic to research
+- `count`: Number of queries to generate (default: 10)
+- `model`: OpenRouter model (default: "openai/gpt-4o-mini")
+  - Examples: "openai/gpt-4o", "anthropic/claude-3-haiku", "meta-llama/llama-3-8b-instruct"
+- `language`: Language for queries (default: "en")
+
 ## Setup Requirements
 
-1. **CAPTCHA Solving Service** - At least one is required:
+1. **CAPTCHA Solving Service** - At least one is required (for Ahrefs tools):
 
    **Option A: CapSolver** (Priority if both configured)
    - Get API key at: https://dashboard.capsolver.com
@@ -59,7 +68,12 @@ Once configured, simply ask naturally:
    - Get API key at: https://anti-captcha.com
    - Set environment variable: `ANTICAPTCHA_API_KEY`
 
-2. **Python 3.10+** - Required runtime
+2. **OpenRouter API Key** - Optional (for AI Search Queries feature):
+   - Get API key at: https://openrouter.ai/keys
+   - Set environment variable: `OPENROUTER_API_KEY`
+   - Supports multiple models: GPT-4, Claude, Llama, etc.
+
+3. **Python 3.10+** - Required runtime
 
 ## Development Commands
 
@@ -93,3 +107,4 @@ src/seo_mcp/
 - **Rate limited?** Wait a few minutes between requests
 - **CAPTCHA error?** Check that CAPSOLVER_API_KEY or ANTICAPTCHA_API_KEY is set correctly
 - **No provider configured?** At least one CAPTCHA provider API key must be set
+- **OpenRouter error?** Check that OPENROUTER_API_KEY is set correctly for AI search queries

@@ -1,6 +1,7 @@
 """
 SEO MCP Server: A free SEO tool MCP (Model Control Protocol) service based on Ahrefs data. Includes features such as backlinks, keyword ideas, and more.
 """
+import json
 import requests
 import time
 import os
@@ -8,6 +9,7 @@ import urllib.parse
 from typing import Dict, List, Optional, Any, Literal
 
 from fastmcp import FastMCP
+from openai import OpenAI
 
 from seo_mcp.backlinks import get_backlinks, load_signature_from_cache, get_signature_and_overview
 from seo_mcp.keywords import get_keyword_ideas, get_keyword_difficulty
@@ -22,8 +24,32 @@ mcp = FastMCP("SEO MCP")
 capsolver_api_key = os.environ.get("CAPSOLVER_API_KEY")
 anticaptcha_api_key = os.environ.get("ANTICAPTCHA_API_KEY")
 
+# OpenRouter API Key (for AI search queries feature)
+# OpenRouter provides access to multiple AI models via a unified API
+openrouter_api_key = os.environ.get("OPENROUTER_API_KEY")
+
 # Request timeout in seconds
 REQUEST_TIMEOUT = 30
+
+# OpenAI prompt for generating search queries
+SEARCH_QUERY_PROMPT = """You are an expert SEO researcher. Given the keyword "{keyword}", generate exactly {count} Google search queries that would help thoroughly research this topic.
+
+For each query, categorize the search intent as one of:
+- informational: seeking knowledge (what, how, why, guide, tutorial)
+- commercial: researching before purchase (best, top, reviews, comparison, vs)
+- transactional: ready to take action (buy, price, discount, near me, order)
+- navigational: looking for specific site/brand
+
+Return a JSON object with a "queries" array containing objects with "query" and "intent" fields.
+Language: {language}
+
+Example output:
+{{"queries": [
+  {{"query": "what is coworking space", "intent": "informational"}},
+  {{"query": "best coworking spaces in city", "intent": "commercial"}}
+]}}
+
+Generate diverse queries covering different angles and intents."""
 
 
 def get_capsolver_token(site_url: str) -> Optional[str]:
@@ -218,6 +244,66 @@ def keyword_difficulty(keyword: str, country: str = "us") -> Optional[Dict[str, 
     site_url = f"https://ahrefs.com/keyword-difficulty/?country={country}&input={urllib.parse.quote(keyword)}"
     token = get_captcha_token(site_url)
     return get_keyword_difficulty(token, keyword, country)
+
+
+@mcp.tool()
+def ai_search_queries(
+    keyword: str,
+    count: int = 10,
+    model: str = "openai/gpt-4o-mini",
+    language: str = "en"
+) -> Optional[Dict[str, Any]]:
+    """
+    Generate AI-powered search queries for keyword research.
+
+    Uses OpenRouter to generate search queries that an AI would use
+    to research a topic, categorized by search intent.
+
+    Args:
+        keyword: The keyword/topic to research
+        count: Number of queries to generate (default: 10)
+        model: Model to use via OpenRouter (default: openai/gpt-4o-mini)
+               Examples: openai/gpt-4o-mini, openai/gpt-4o, anthropic/claude-3-haiku
+        language: Language for queries (default: en)
+
+    Returns:
+        Dictionary with categorized search queries
+    """
+    if not openrouter_api_key:
+        raise Exception(
+            "OpenRouter API key not configured. "
+            "Set OPENROUTER_API_KEY environment variable."
+        )
+
+    client = OpenAI(
+        api_key=openrouter_api_key,
+        base_url="https://openrouter.ai/api/v1"
+    )
+
+    prompt = SEARCH_QUERY_PROMPT.format(
+        keyword=keyword,
+        count=count,
+        language=language
+    )
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": "You are an SEO expert. Return only valid JSON."},
+            {"role": "user", "content": prompt}
+        ],
+        timeout=REQUEST_TIMEOUT
+    )
+
+    result = json.loads(response.choices[0].message.content)
+    queries = result.get("queries", [])
+
+    return {
+        "keyword": keyword,
+        "queries": queries,
+        "model_used": model,
+        "total_queries": len(queries)
+    }
 
 
 def main():
