@@ -1,34 +1,84 @@
+<div align="center">
+
 # SEO Research MCP
 
-A free SEO research tool using [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) powered by Ahrefs data. Get backlink analysis, keyword research, traffic estimation, and more — directly in your AI-powered IDE.
+**Free SEO research tools for AI-powered IDEs**
 
-> **Disclaimer:** This MCP service is for educational purposes only. Please use responsibly.
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 
-## Features
+[Features](#-features) • [Installation](#-installation) • [IDE Setup](#-ide-setup-guides) • [API Reference](#-api-reference) • [Credits](#-credits)
 
-| Feature | Description |
-|---------|-------------|
-| **Backlink Analysis** | Domain rating, anchor text, link attributes, edu/gov filters |
-| **Keyword Research** | Generate keyword ideas from seed keywords with difficulty scores |
-| **Traffic Analysis** | Estimate website traffic, top pages, country distribution |
-| **Keyword Difficulty** | KD score with full SERP analysis |
+</div>
 
-## Prerequisites
+---
 
-- Python 3.10+
-- [CapSolver](https://dashboard.capsolver.com/passport/register?inviteCode=VK9BLtwYlZxi) API key (for CAPTCHA solving)
+> [!CAUTION]
+> ## ⚠️ Educational Use Only
+>
+> **This project is for educational and research purposes only.**
+>
+> - This tool interfaces with third-party services (Ahrefs, CapSolver)
+> - Users must comply with all applicable terms of service
+> - The authors do not endorse any use that violates third-party ToS
+> - Use responsibly and at your own risk
+>
+> By using this software, you acknowledge that you understand and accept these terms.
 
-## Installation
+---
 
-### From PyPI
+## 🎯 What is this?
+
+SEO Research MCP brings powerful SEO research capabilities directly into your AI coding assistant. Using the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/), it connects your IDE to Ahrefs' SEO data, allowing you to:
+
+- Research competitor backlinks while coding
+- Generate keyword ideas without leaving your editor
+- Analyze traffic patterns for any website
+- Check keyword difficulty before creating content
+
+---
+
+## ✨ Features
+
+| Feature | Description | Example Use |
+|---------|-------------|-------------|
+| **🔗 Backlink Analysis** | Domain rating, anchor text, edu/gov links | "Show me backlinks for competitor.com" |
+| **🔑 Keyword Research** | Generate ideas from seed keywords | "Find keywords related to 'python tutorial'" |
+| **📊 Traffic Analysis** | Monthly traffic, top pages, countries | "What's the traffic for example.com?" |
+| **📈 Keyword Difficulty** | KD score with full SERP breakdown | "How hard is 'best laptop 2025' to rank for?" |
+
+---
+
+## 📋 Prerequisites
+
+Before you start, you'll need:
+
+1. **Python 3.10 or higher**
+   ```bash
+   python --version  # Should be 3.10+
+   ```
+
+2. **CapSolver API Key** (for CAPTCHA solving)
+
+   👉 [Get your API key here](https://dashboard.capsolver.com/passport/register?inviteCode=VK9BLtwYlZxi)
+
+---
+
+## 📦 Installation
+
+### Option 1: From PyPI (Recommended)
 
 ```bash
 pip install seo-mcp
-# or
+```
+
+Or using `uv`:
+```bash
 uv pip install seo-mcp
 ```
 
-### From Source
+### Option 2: From Source
 
 ```bash
 git clone https://github.com/egebese/seo-research-mcp.git
@@ -36,15 +86,23 @@ cd seo-research-mcp
 pip install -e .
 ```
 
-## IDE Setup Guides
+---
+
+## 🛠️ IDE Setup Guides
+
+Choose your IDE and follow the setup instructions:
 
 <details>
-<summary><strong>Claude Desktop</strong></summary>
+<summary><h3>🟣 Claude Desktop</h3></summary>
 
-### Option 1: Manual Configuration
+#### Step 1: Open Config File
 
-1. Open Claude Desktop → Settings → Developer → Edit Config
-2. Add to `claude_desktop_config.json`:
+1. Open Claude Desktop
+2. Go to **Settings** → **Developer** → **Edit Config**
+
+#### Step 2: Add Configuration
+
+Add this to your `claude_desktop_config.json`:
 
 ```json
 {
@@ -53,37 +111,40 @@ pip install -e .
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "CAP-xxxxxx"
+        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
       }
     }
   }
 }
 ```
 
-3. Restart Claude Desktop
-4. Look for the hammer/tools icon in the bottom-right corner
+#### Step 3: Restart & Verify
 
-**Config file locations:**
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+1. Restart Claude Desktop
+2. Look for the **hammer/tools icon** in the bottom-right corner
+
+**📁 Config file locations:**
+| OS | Path |
+|----|------|
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
 
 </details>
 
 <details>
-<summary><strong>Claude Code</strong></summary>
+<summary><h3>🔵 Claude Code (CLI)</h3></summary>
 
-### Option 1: CLI Command
+#### Option A: Quick Setup (CLI)
 
 ```bash
+# Add the MCP server
 claude mcp add seo-research --scope user -- uvx --python 3.10 seo-mcp
+
+# Set your API key
+export CAPSOLVER_API_KEY="YOUR_API_KEY_HERE"
 ```
 
-Then set the environment variable:
-```bash
-export CAPSOLVER_API_KEY="CAP-xxxxxx"
-```
-
-### Option 2: Configuration File
+#### Option B: Config File
 
 Add to `~/.claude.json`:
 
@@ -94,14 +155,14 @@ Add to `~/.claude.json`:
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "CAP-xxxxxx"
+        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
       }
     }
   }
 }
 ```
 
-### Verify Installation
+#### Verify Installation
 
 ```bash
 claude mcp list
@@ -110,11 +171,11 @@ claude mcp list
 </details>
 
 <details>
-<summary><strong>Cursor</strong></summary>
+<summary><h3>🟢 Cursor</h3></summary>
 
-### Option 1: Global Configuration
+#### Global Setup (All Projects)
 
-Create or edit `~/.cursor/mcp.json`:
+Create `~/.cursor/mcp.json`:
 
 ```json
 {
@@ -123,34 +184,36 @@ Create or edit `~/.cursor/mcp.json`:
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "CAP-xxxxxx"
+        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
       }
     }
   }
 }
 ```
 
-### Option 2: Project Configuration
+#### Project Setup (Single Project)
 
 Create `.cursor/mcp.json` in your project root with the same content.
 
-### Verify Installation
+#### Verify Installation
 
-1. Go to **File → Preferences → Cursor Settings**
+1. Go to **File** → **Preferences** → **Cursor Settings**
 2. Select **MCP** in the sidebar
-3. Check that "seo-research" appears under Available Tools
+3. Check that `seo-research` appears under **Available Tools**
 
 </details>
 
 <details>
-<summary><strong>Windsurf</strong></summary>
+<summary><h3>🌊 Windsurf</h3></summary>
 
-### Configuration
+#### Step 1: Open Settings
 
-1. Open Windsurf Settings: `Cmd+Shift+P` (Mac) / `Ctrl+Shift+P` (Windows/Linux)
-2. Type "Open Windsurf Settings"
-3. Navigate to **Cascade → MCP Servers**
-4. Click "Edit raw mcp_config.json" and add:
+- **Mac:** `Cmd + Shift + P` → "Open Windsurf Settings"
+- **Windows/Linux:** `Ctrl + Shift + P` → "Open Windsurf Settings"
+
+#### Step 2: Add Configuration
+
+Navigate to **Cascade** → **MCP Servers** → **Edit raw mcp_config.json**:
 
 ```json
 {
@@ -159,23 +222,23 @@ Create `.cursor/mcp.json` in your project root with the same content.
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "CAP-xxxxxx"
+        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
       }
     }
   }
 }
 ```
 
-**Config file location:** `~/.codeium/windsurf/mcp_config.json`
+**📁 Config location:** `~/.codeium/windsurf/mcp_config.json`
 
 </details>
 
 <details>
-<summary><strong>VS Code (GitHub Copilot)</strong></summary>
+<summary><h3>💜 VS Code (GitHub Copilot)</h3></summary>
 
-> Requires VS Code 1.102+ with GitHub Copilot
+> ⚠️ Requires VS Code 1.102+ with GitHub Copilot
 
-### Configuration
+#### Setup
 
 Create `.vscode/mcp.json` in your workspace:
 
@@ -186,25 +249,26 @@ Create `.vscode/mcp.json` in your workspace:
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "CAP-xxxxxx"
+        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
       }
     }
   }
 }
 ```
 
-### Enable the Server
+#### Activate
 
-1. Open the file and click the **Start** button that appears
-2. In Chat view, click the **Tools** button to toggle MCP tools on/off
-3. Use `#tool_name` in prompts to invoke specific tools
+1. Open the `.vscode/mcp.json` file
+2. Click the **Start** button that appears
+3. In Chat view, click **Tools** to toggle MCP tools
+4. Use `#tool_name` in prompts to invoke tools
 
 </details>
 
 <details>
-<summary><strong>Zed</strong></summary>
+<summary><h3>⚡ Zed</h3></summary>
 
-### Configuration
+#### Setup
 
 Add to your Zed `settings.json`:
 
@@ -216,7 +280,7 @@ Add to your Zed `settings.json`:
         "path": "uvx",
         "args": ["--python", "3.10", "seo-mcp"],
         "env": {
-          "CAPSOLVER_API_KEY": "CAP-xxxxxx"
+          "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
         }
       }
     }
@@ -224,25 +288,27 @@ Add to your Zed `settings.json`:
 }
 ```
 
-### Verify Installation
+#### Verify
 
-1. Open the Agent Panel settings
-2. Check the indicator dot next to "seo-research"
-3. Green dot = Server is active
+1. Open **Agent Panel** settings
+2. Check the indicator dot next to `seo-research`
+3. **Green dot** = Server is active
 
 </details>
 
-## API Reference
+---
+
+## 📖 API Reference
 
 ### `get_backlinks_list(domain)`
 
-Get backlinks for a domain.
+Get backlink data for any domain.
 
 ```python
-# Parameters
+# Input
 domain: str  # e.g., "example.com"
 
-# Returns
+# Output
 {
   "overview": {
     "domainRating": 76,
@@ -263,40 +329,42 @@ domain: str  # e.g., "example.com"
 }
 ```
 
+---
+
 ### `keyword_generator(keyword, country?, search_engine?)`
 
 Generate keyword ideas from a seed keyword.
 
 ```python
-# Parameters
+# Input
 keyword: str        # Seed keyword
-country: str        # Country code (default: "us")
-search_engine: str  # Search engine (default: "Google")
+country: str        # Default: "us"
+search_engine: str  # Default: "Google"
 
-# Returns
+# Output
 [
   {
     "keyword": "example keyword",
     "volume": 1000,
-    "difficulty": 45,
-    "cpc": 2.5
+    "difficulty": 45
   }
 ]
 ```
+
+---
 
 ### `get_traffic(domain_or_url, country?, mode?)`
 
 Estimate search traffic for a website.
 
 ```python
-# Parameters
+# Input
 domain_or_url: str  # Domain or full URL
-country: str        # Country filter (default: "None")
-mode: str           # "subdomains" | "exact" (default: "subdomains")
+country: str        # Default: "None" (all countries)
+mode: str           # "subdomains" | "exact"
 
-# Returns
+# Output
 {
-  "traffic_history": [...],
   "traffic": {
     "trafficMonthlyAvg": 50000,
     "costMontlyAvg": 25000
@@ -307,63 +375,78 @@ mode: str           # "subdomains" | "exact" (default: "subdomains")
 }
 ```
 
+---
+
 ### `keyword_difficulty(keyword, country?)`
 
 Get keyword difficulty score with SERP analysis.
 
 ```python
-# Parameters
+# Input
 keyword: str   # Keyword to analyze
-country: str   # Country code (default: "us")
+country: str   # Default: "us"
 
-# Returns
+# Output
 {
   "difficulty": 45,
-  "serp": [...],
-  "related": [...]
+  "serp": [...]
 }
 ```
 
-## How It Works
+---
+
+## ⚙️ How It Works
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   MCP       │────▶│  CapSolver  │────▶│   Ahrefs    │────▶│  Formatted  │
-│   Request   │     │  (CAPTCHA)  │     │    API      │     │   Response  │
-└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│     Your     │     │   CapSolver  │     │    Ahrefs    │     │   Formatted  │
+│    AI IDE    │────▶│   (CAPTCHA)  │────▶│     API      │────▶│    Results   │
+└──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
 ```
 
-1. Your AI IDE sends an MCP request
-2. CapSolver solves the Cloudflare Turnstile CAPTCHA
-3. Authentication token is used to query Ahrefs API
-4. Results are cached and formatted for your AI assistant
+1. **Request** → Your AI assistant calls an MCP tool
+2. **CAPTCHA** → CapSolver handles Cloudflare verification
+3. **Data** → Ahrefs API returns SEO data
+4. **Response** → Formatted results appear in your IDE
 
-## Development
+---
 
-```bash
-git clone https://github.com/egebese/seo-research-mcp.git
-cd seo-research-mcp
-uv sync
-python main.py
-```
+## 🐛 Troubleshooting
 
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| CapSolver API key error | Verify `CAPSOLVER_API_KEY` environment variable is set |
-| Rate limiting | Reduce request frequency |
-| No results returned | Domain may not be indexed by Ahrefs |
+| Problem | Solution |
+|---------|----------|
+| "CapSolver API key error" | Check `CAPSOLVER_API_KEY` is set correctly |
+| Rate limiting | Wait a few minutes, reduce request frequency |
+| No results | Domain may not be indexed by Ahrefs |
 | Server not appearing | Restart your IDE after config changes |
+| Connection timeout | Check your internet connection |
 
-## Star History
+---
+
+## 📊 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=egebese/seo-research-mcp&type=Date)](https://star-history.com/#egebese/seo-research-mcp&Date)
 
-## License
+---
 
-MIT License - See [LICENSE](LICENSE) file
+## 📄 License
 
-## Credits
+This project is licensed under the **MIT License** with an educational use notice.
 
-This project is a fork of [seo-mcp](https://github.com/cnych/seo-mcp) by [@cnych](https://github.com/cnych). Special thanks to the original author for creating this tool.
+See [LICENSE](LICENSE) for full details.
+
+---
+
+## 🙏 Credits
+
+This project is a fork of [seo-mcp](https://github.com/cnych/seo-mcp) by [@cnych](https://github.com/cnych).
+
+Special thanks to the original author for creating this tool.
+
+---
+
+<div align="center">
+
+**⭐ If this helps your SEO research, consider giving it a star! ⭐**
+
+</div>
