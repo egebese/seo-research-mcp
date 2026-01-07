@@ -19,7 +19,7 @@
 >
 > **This project is for educational and research purposes only.**
 >
-> - This tool interfaces with third-party services (Ahrefs, CapSolver)
+> - This tool interfaces with third-party services (Ahrefs, CapSolver, Anti-Captcha)
 > - Users must comply with all applicable terms of service
 > - The authors do not endorse any use that violates third-party ToS
 > - Use responsibly and at your own risk
@@ -59,9 +59,14 @@ Before you start, you'll need:
    python --version  # Should be 3.10+
    ```
 
-2. **CapSolver API Key** (for CAPTCHA solving)
+2. **CAPTCHA Solving Service** (at least one required)
 
-   👉 [Get your API key here](https://dashboard.capsolver.com/passport/register?inviteCode=VK9BLtwYlZxi)
+   | Provider | Get API Key | Environment Variable |
+   |----------|-------------|---------------------|
+   | **CapSolver** (Priority) | [Get your API key here](https://dashboard.capsolver.com/passport/register?inviteCode=VK9BLtwYlZxi) | `CAPSOLVER_API_KEY` |
+   | **Anti-Captcha** | [Get your API key here](https://getcaptchasolution.com/jmfmeriikj) | `ANTICAPTCHA_API_KEY` |
+
+   > **Note:** If both keys are configured, CapSolver will be used as the primary provider with Anti-Captcha as fallback.
 
 ---
 
@@ -111,12 +116,15 @@ Add this to your `claude_desktop_config.json`:
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
+        "CAPSOLVER_API_KEY": "YOUR_CAPSOLVER_KEY",
+        "ANTICAPTCHA_API_KEY": "YOUR_ANTICAPTCHA_KEY"
       }
     }
   }
 }
 ```
+
+> **Note:** You only need one of the API keys. Remove the line for the provider you don't use.
 
 #### Step 3: Restart & Verify
 
@@ -140,8 +148,10 @@ Add this to your `claude_desktop_config.json`:
 # Add the MCP server
 claude mcp add seo-research --scope user -- uvx --python 3.10 seo-mcp
 
-# Set your API key
-export CAPSOLVER_API_KEY="YOUR_API_KEY_HERE"
+# Set your API key (choose one)
+export CAPSOLVER_API_KEY="YOUR_CAPSOLVER_KEY"
+# OR
+export ANTICAPTCHA_API_KEY="YOUR_ANTICAPTCHA_KEY"
 ```
 
 #### Option B: Config File
@@ -155,12 +165,15 @@ Add to `~/.claude.json`:
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
+        "CAPSOLVER_API_KEY": "YOUR_CAPSOLVER_KEY",
+        "ANTICAPTCHA_API_KEY": "YOUR_ANTICAPTCHA_KEY"
       }
     }
   }
 }
 ```
+
+> **Note:** You only need one of the API keys. Remove the line for the provider you don't use.
 
 #### Verify Installation
 
@@ -184,12 +197,15 @@ Create `~/.cursor/mcp.json`:
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
+        "CAPSOLVER_API_KEY": "YOUR_CAPSOLVER_KEY",
+        "ANTICAPTCHA_API_KEY": "YOUR_ANTICAPTCHA_KEY"
       }
     }
   }
 }
 ```
+
+> **Note:** You only need one of the API keys.
 
 #### Project Setup (Single Project)
 
@@ -222,12 +238,15 @@ Navigate to **Cascade** → **MCP Servers** → **Edit raw mcp_config.json**:
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
+        "CAPSOLVER_API_KEY": "YOUR_CAPSOLVER_KEY",
+        "ANTICAPTCHA_API_KEY": "YOUR_ANTICAPTCHA_KEY"
       }
     }
   }
 }
 ```
+
+> **Note:** You only need one of the API keys.
 
 **📁 Config location:** `~/.codeium/windsurf/mcp_config.json`
 
@@ -249,12 +268,15 @@ Create `.vscode/mcp.json` in your workspace:
       "command": "uvx",
       "args": ["--python", "3.10", "seo-mcp"],
       "env": {
-        "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
+        "CAPSOLVER_API_KEY": "YOUR_CAPSOLVER_KEY",
+        "ANTICAPTCHA_API_KEY": "YOUR_ANTICAPTCHA_KEY"
       }
     }
   }
 }
 ```
+
+> **Note:** You only need one of the API keys.
 
 #### Activate
 
@@ -280,13 +302,16 @@ Add to your Zed `settings.json`:
         "path": "uvx",
         "args": ["--python", "3.10", "seo-mcp"],
         "env": {
-          "CAPSOLVER_API_KEY": "YOUR_API_KEY_HERE"
+          "CAPSOLVER_API_KEY": "YOUR_CAPSOLVER_KEY",
+          "ANTICAPTCHA_API_KEY": "YOUR_ANTICAPTCHA_KEY"
         }
       }
     }
   }
 }
 ```
+
+> **Note:** You only need one of the API keys.
 
 #### Verify
 
@@ -399,13 +424,14 @@ country: str   # Default: "us"
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│     Your     │     │   CapSolver  │     │    Ahrefs    │     │   Formatted  │
-│    AI IDE    │────▶│   (CAPTCHA)  │────▶│     API      │────▶│    Results   │
+│     Your     │     │  CapSolver   │     │    Ahrefs    │     │   Formatted  │
+│    AI IDE    │────▶│     or       │────▶│     API      │────▶│    Results   │
+│              │     │ Anti-Captcha │     │              │     │              │
 └──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
 ```
 
 1. **Request** → Your AI assistant calls an MCP tool
-2. **CAPTCHA** → CapSolver handles Cloudflare verification
+2. **CAPTCHA** → CapSolver or Anti-Captcha handles Cloudflare verification
 3. **Data** → Ahrefs API returns SEO data
 4. **Response** → Formatted results appear in your IDE
 
@@ -415,7 +441,8 @@ country: str   # Default: "us"
 
 | Problem | Solution |
 |---------|----------|
-| "CapSolver API key error" | Check `CAPSOLVER_API_KEY` is set correctly |
+| "No CAPTCHA provider configured" | Set either `CAPSOLVER_API_KEY` or `ANTICAPTCHA_API_KEY` |
+| "Failed to solve CAPTCHA" | Check your API key is valid and has balance |
 | Rate limiting | Wait a few minutes, reduce request frequency |
 | No results | Domain may not be indexed by Ahrefs |
 | Server not appearing | Restart your IDE after config changes |
