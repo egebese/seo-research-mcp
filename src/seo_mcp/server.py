@@ -31,6 +31,9 @@ openrouter_api_key = os.environ.get("OPENROUTER_API_KEY")
 # Request timeout in seconds
 REQUEST_TIMEOUT = 30
 
+# Maximum polling attempts for CAPTCHA solving (prevents infinite loops)
+MAX_POLLING_ATTEMPTS = 120  # 120 attempts * 1 second = 2 minutes max
+
 # OpenAI prompt for generating search queries
 SEARCH_QUERY_PROMPT = """You are an expert SEO researcher. Given the keyword "{keyword}", generate exactly {count} Google search queries that would help thoroughly research this topic.
 
@@ -82,7 +85,7 @@ def get_capsolver_token(site_url: str) -> Optional[str]:
     if not task_id:
         return None
 
-    while True:
+    for _ in range(MAX_POLLING_ATTEMPTS):
         time.sleep(1)
         payload = {"clientKey": capsolver_api_key, "taskId": task_id}
         res = requests.post("https://api.capsolver.com/getTaskResult", json=payload, timeout=REQUEST_TIMEOUT)
@@ -93,6 +96,9 @@ def get_capsolver_token(site_url: str) -> Optional[str]:
             return token
         if status == "failed" or resp.get("errorId"):
             return None
+
+    # Max attempts reached
+    return None
 
 
 def get_anticaptcha_token(site_url: str) -> Optional[str]:
@@ -126,7 +132,7 @@ def get_anticaptcha_token(site_url: str) -> Optional[str]:
     if not task_id:
         return None
 
-    while True:
+    for _ in range(MAX_POLLING_ATTEMPTS):
         time.sleep(1)
         payload = {"clientKey": anticaptcha_api_key, "taskId": task_id}
         res = requests.post("https://api.anti-captcha.com/getTaskResult", json=payload, timeout=REQUEST_TIMEOUT)
@@ -141,6 +147,9 @@ def get_anticaptcha_token(site_url: str) -> Optional[str]:
             return token
         if status == "failed":
             return None
+
+    # Max attempts reached
+    return None
 
 
 def get_captcha_token(site_url: str) -> str:
@@ -295,15 +304,33 @@ def ai_search_queries(
         timeout=REQUEST_TIMEOUT
     )
 
-    result = json.loads(response.choices[0].message.content)
-    queries = result.get("queries", [])
+    # Safely parse JSON response
+    content = response.choices[0].message.content if response.choices else None
+    queries = []
+    error = None
 
-    return {
+    if content:
+        try:
+            result = json.loads(content)
+            queries = result.get("queries", [])
+        except json.JSONDecodeError as e:
+            error = f"JSON parsing error: {str(e)}"
+        except Exception as e:
+            error = f"Unexpected error parsing response: {str(e)}"
+    else:
+        error = "Empty response from model"
+
+    response_data = {
         "keyword": keyword,
         "queries": queries,
         "model_used": model,
         "total_queries": len(queries)
     }
+
+    if error:
+        response_data["error"] = error
+
+    return response_data
 
 
 def main():
