@@ -22,6 +22,9 @@ mcp = FastMCP("SEO MCP")
 capsolver_api_key = os.environ.get("CAPSOLVER_API_KEY")
 anticaptcha_api_key = os.environ.get("ANTICAPTCHA_API_KEY")
 
+# Request timeout in seconds
+REQUEST_TIMEOUT = 30
+
 
 def get_capsolver_token(site_url: str) -> Optional[str]:
     """
@@ -47,7 +50,7 @@ def get_capsolver_token(site_url: str) -> Optional[str]:
             }
         }
     }
-    res = requests.post("https://api.capsolver.com/createTask", json=payload)
+    res = requests.post("https://api.capsolver.com/createTask", json=payload, timeout=REQUEST_TIMEOUT)
     resp = res.json()
     task_id = resp.get("taskId")
     if not task_id:
@@ -56,7 +59,7 @@ def get_capsolver_token(site_url: str) -> Optional[str]:
     while True:
         time.sleep(1)
         payload = {"clientKey": capsolver_api_key, "taskId": task_id}
-        res = requests.post("https://api.capsolver.com/getTaskResult", json=payload)
+        res = requests.post("https://api.capsolver.com/getTaskResult", json=payload, timeout=REQUEST_TIMEOUT)
         resp = res.json()
         status = resp.get("status")
         if status == "ready":
@@ -87,7 +90,7 @@ def get_anticaptcha_token(site_url: str) -> Optional[str]:
             "websiteKey": "0x4AAAAAAAAzi9ITzSN9xKMi"
         }
     }
-    res = requests.post("https://api.anti-captcha.com/createTask", json=payload)
+    res = requests.post("https://api.anti-captcha.com/createTask", json=payload, timeout=REQUEST_TIMEOUT)
     resp = res.json()
 
     if resp.get("errorId", 0) != 0:
@@ -100,7 +103,7 @@ def get_anticaptcha_token(site_url: str) -> Optional[str]:
     while True:
         time.sleep(1)
         payload = {"clientKey": anticaptcha_api_key, "taskId": task_id}
-        res = requests.post("https://api.anti-captcha.com/getTaskResult", json=payload)
+        res = requests.post("https://api.anti-captcha.com/getTaskResult", json=payload, timeout=REQUEST_TIMEOUT)
         resp = res.json()
 
         if resp.get("errorId", 0) != 0:
@@ -136,7 +139,7 @@ def get_captcha_token(site_url: str) -> str:
 
     # Try CapSolver first (priority)
     if capsolver_api_key:
-        token = get_captcha_token(site_url)
+        token = get_capsolver_token(site_url)
         if token:
             return token
 
