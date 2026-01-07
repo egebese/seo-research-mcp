@@ -49,9 +49,15 @@ Once configured, simply ask naturally:
 
 ## Setup Requirements
 
-1. **CapSolver API Key** - Required for CAPTCHA solving
-   - Get one at: https://dashboard.capsolver.com
-   - Set as environment variable: `CAPSOLVER_API_KEY`
+1. **CAPTCHA Solving Service** - At least one is required:
+
+   **Option A: CapSolver** (Priority if both configured)
+   - Get API key at: https://dashboard.capsolver.com
+   - Set environment variable: `CAPSOLVER_API_KEY`
+
+   **Option B: Anti-Captcha**
+   - Get API key at: https://anti-captcha.com
+   - Set environment variable: `ANTICAPTCHA_API_KEY`
 
 2. **Python 3.10+** - Required runtime
 
@@ -85,4 +91,5 @@ src/seo_mcp/
 
 - **No results?** Domain may not be indexed by Ahrefs
 - **Rate limited?** Wait a few minutes between requests
-- **API key error?** Check CAPSOLVER_API_KEY is set correctly
+- **CAPTCHA error?** Check that CAPSOLVER_API_KEY or ANTICAPTCHA_API_KEY is set correctly
+- **No provider configured?** At least one CAPTCHA provider API key must be set
