@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 
-[Features](#-features) • [Installation](#-installation) • [IDE Setup](#-ide-setup-guides) • [API Reference](#-api-reference) • [Credits](#-credits)
+[Features](#-features) • [Installation](#-installation) • [IDE Setup](#-ide-setup-guides) • [API Reference](#-api-reference) • [Contributing](#-contributing) • [Credits](#-credits)
 
 </div>
 
@@ -420,6 +420,48 @@ country: str   # Default: "us"
 | No results | Domain may not be indexed by Ahrefs |
 | Server not appearing | Restart your IDE after config changes |
 | Connection timeout | Check your internet connection |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+### Ways to Contribute
+
+- **🐛 Report Bugs** - Found an issue? [Open a bug report](https://github.com/egebese/seo-research-mcp/issues/new?template=bug_report.md)
+- **💡 Suggest Features** - Have an idea? [Request a feature](https://github.com/egebese/seo-research-mcp/issues/new?template=feature_request.md)
+- **📝 Improve Docs** - Fix typos, clarify instructions, add examples
+- **🔧 Submit Code** - Bug fixes, new features, optimizations
+
+### Development Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/egebese/seo-research-mcp.git
+cd seo-research-mcp
+
+# Install dependencies
+uv sync
+
+# Run locally
+python main.py
+```
+
+### Pull Request Process
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to your branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Code Guidelines
+
+- Keep code simple and readable
+- Add comments for complex logic
+- Test your changes before submitting
+- Follow existing code style
 
 ---
 
